@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BayFlow Auto Repair - Login / Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full bg-slate-800 rounded-3xl overflow-hidden border border-slate-700 shadow-2xl grid grid-cols-1 md:grid-cols-2">
+        
+        <!-- Left Side: Workshop Background Image -->
+        <div class="relative bg-cover bg-center p-8 flex flex-col justify-between min-h-[400px]" style="background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80');">
+            <div>
+                <span class="px-3 py-1 bg-blue-600/80 text-white text-xs font-bold rounded-full uppercase tracking-wider">Auto Workshop Manager</span>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-3">BayFlow Auto Repair</h1>
+                <p class="text-xs text-slate-300 leading-relaxed">Smart multi-tenant auto workshop management platform designed for modern garages and mechanics.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+                &copy; 2026 BayFlow Systems
+            </div>
+        </div>
+
+        <!-- Right Side: Form & Tabs -->
+        <div class="p-8 flex flex-col justify-center bg-slate-900/50">
+            <!-- Tabs -->
+            <div class="flex bg-slate-900 p-1 rounded-xl mb-6 border border-slate-800">
+                <button onclick="switchTab('login')" id="loginTab" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Login</button>
+                <button onclick="switchTab('register')" id="registerTab" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-blue-600 text-white transition shadow">Register</button>
+            </div>
+
+            <!-- Register Form View -->
+            <div id="registerFormContainer">
+                <h3 class="text-lg font-bold text-white mb-4">Create Account</h3>
+                <form onsubmit="handleRegister(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Full Name</label>
+                        <input type="text" id="regName" required placeholder="e.g. Ali Hussain" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
+                        <input type="email" id="regEmail" required placeholder="alihussain@gmail.com" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Password (Min 8 chars)</label>
+                        <input type="password" id="regPassword" required placeholder="••••••••" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition shadow-lg">
+                        Register
+                    </button>
+                </form>
+            </div>
+
+            <!-- Login Form View -->
+            <div id="loginFormContainer" class="hidden">
+                <h3 class="text-lg font-bold text-white mb-4">Welcome Back</h3>
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="owner@bayflow.com" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition shadow-lg">
+                        Login to Dashboard
+                    </button>
+                </form>
+            </div>
+
+            <!-- Link to Customer Portal -->
+            <div class="mt-6 pt-4 border-t border-slate-800 text-center">
+                <a href="booking.html" class="text-xs text-blue-400 hover:text-blue-300 font-medium inline-block cursor-pointer">
+                    🌐 Customer? Go to Customer Booking Portal ➔
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const loginForm = document.getElementById('loginFormContainer');
+            const registerForm = document.getElementById('registerFormContainer');
+
+            if (tab === 'login') {
+                loginTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-blue-600 text-white transition shadow";
+                registerTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                registerTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-blue-600 text-white transition shadow";
+                loginTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        }
+
+        // Only Login takes you to the dashboard
+        function handleLogin(event) {
+            event.preventDefault();
+            window.location.href = 'dashboard.html';
+        }
+
+        // Register switches you to the login tab
+        function handleRegister(event) {
+            event.preventDefault();
+            alert("Account registered successfully! Please login now.");
+            switchTab('login');
+        }
+    </script>
+</body>
+</html>

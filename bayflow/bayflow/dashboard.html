@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BayFlow Auto Repair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-3">
+            <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-lg">BayFlow</span>
+            <h1 class="text-xl font-bold text-white tracking-wide">Workshop Management Dashboard</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Yeh button ab seedha booking.html (Customer Portal) par khulega -->
+            <a href="booking.html" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition flex items-center gap-1">
+                <span>🌐</span> Customer Portal
+            </a>
+            <a href="index.html" class="px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-semibold rounded-lg border border-red-500/30 transition">
+                Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6">
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span>📋</span> Active Workshop Jobs
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Manage and track live repair orders across shops</p>
+                </div>
+                <button onclick="loadOrders()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition text-slate-300">
+                    🔄 Refresh
+                </button>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 text-xs uppercase tracking-wider">
+                            <th class="py-3 px-4">ID</th>
+                            <th class="py-3 px-4">Customer</th>
+                            <th class="py-3 px-4">Vehicle</th>
+                            <th class="py-3 px-4">Problem Description</th>
+                            <th class="py-3 px-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody" class="text-sm divide-y divide-slate-700/50">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-slate-500">Loading bookings from server...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="tableMessage" class="text-xs text-slate-400 mt-4"></p>
+        </div>
+    </main>
+
+    <script>
+        const BOOKING_API = "http://localhost:8080/api/bookings";
+
+        async function loadOrders() {
+            const tbody = document.getElementById('ordersTableBody');
+            const tableMessage = document.getElementById('tableMessage');
+            tableMessage.textContent = "Fetching bookings from backend...";
+
+            try {
+                const response = await fetch(BOOKING_API);
+                if (!response.ok) throw new Error("Server returned HTTP " + response.status);
+
+                const orders = await response.json();
+                tbody.innerHTML = '';
+
+                if (!Array.isArray(orders) || orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500">No repair orders found.</td></tr>`;
+                    tableMessage.textContent = "";
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    const status = order.status || "PENDING";
+                    const badgeColor = status === 'PENDING' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 
+                                       status === 'IN_REPAIR' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 
+                                       'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+
+                    row.innerHTML = `
+                        <td class="py-3 px-4 text-slate-400">#${order.id ?? ''}</td>
+                        <td class="py-3 px-4 font-medium text-white">${order.customerName ?? ''}</td>
+                        <td class="py-3 px-4 text-slate-300">${order.vehicleModel ?? ''}</td>
+                        <td class="py-3 px-4 text-slate-400 text-xs">${order.problemDescription ?? ''}</td>
+                        <td class="py-3 px-4"><span class="px-2.5 py-1 text-xs rounded-full border ${badgeColor}">${status}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                tableMessage.textContent = "Showing " + orders.length + " booking(s).";
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-red-400">Unable to connect to backend server. Make sure Spring Boot is running on port 8080.</td></tr>`;
+                tableMessage.textContent = "";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadOrders);
+    </script>
+</body>
+</html>
